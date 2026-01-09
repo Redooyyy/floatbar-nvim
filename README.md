@@ -57,7 +57,7 @@ use {
 Toggle terminal: <space>tt
 ```
 
-Send command programmatically:
+### Send command programmatically:
 
 #### require("floatbar").send("ls -la")
 
