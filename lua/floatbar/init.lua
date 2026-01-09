@@ -1,4 +1,4 @@
-local window = require('floatterm.window')
+local window = require('floatbar.window')
 
 local M = {}
 
