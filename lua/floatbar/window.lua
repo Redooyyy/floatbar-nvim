@@ -68,15 +68,23 @@ function M.open()
     vim.fn.termopen(vim.o.shell)
   end
 
-  -- Modern transparent / theme-aware highlights
-  -- Set NormalFloat and FloatBorder to transparent if not already defined
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
-  vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE' })
+  -- -------------------------------
+  -- Modern theme-aware highlights
+  -- -------------------------------
 
-  -- Apply to floating terminal window
+  -- TokyoNight colors (you can adjust if using a different theme)
+  local fg = '#CBE0F0' -- default foreground
+  local border_fg = '#547998' -- border color
+
+  -- Transparent floating background
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE', fg = fg })
+  vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE', fg = border_fg })
+
+  -- Apply highlights to this floating window
   vim.api.nvim_win_set_option(term_win, 'winhl', 'Normal:NormalFloat,FloatBorder:FloatBorder')
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
+  -- Enter insert mode automatically
   vim.cmd('startinsert')
 end
 
