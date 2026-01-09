@@ -53,9 +53,7 @@ use {
 
 ### Usage
 
-```
-Toggle terminal: <space>tt
-```
+## Toggle terminal: <C-t> (des: ctrl + T)
 
 ### Send command programmatically:
 
