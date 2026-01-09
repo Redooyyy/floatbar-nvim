@@ -61,9 +61,9 @@ Send command programmatically:
 
 #### require("floatbar").send("ls -la")
 
-    Terminal buffer persists after closing
+Terminal buffer persists after closing
 
-    Works in both normal and terminal mode
+Works in both normal and terminal mode
 
 ### Configuration
 
@@ -86,10 +86,10 @@ Normal <space>tt Toggle floating terminal
 Terminal	<space>tt	Toggle floating terminal
 ```
 
-Notes
+## Notes
 
-    Make sure vim.o.termguicolors = true is enabled in your config.
+Make sure vim.o.termguicolors = true is enabled in your config.
 
-    Transparent floating terminals work best with true-color terminals like Kitty, Alacritty, or iTerm2.
+Transparent floating terminals work best with true-color terminals like Kitty, Alacritty, or iTerm2.
 
-    Colors inherit your Neovim theme (tested with TokyoNight).
+Colors inherit your Neovim theme (tested with TokyoNight).
