@@ -6,10 +6,10 @@ local term_win = nil
 
 -- Default config
 local config = {
-  width = 0.8, -- 80% of screen by default
-  height = 0.8, -- 80% of screen by default
+  width = 0.8, -- 80% of screen
+  height = 0.8, -- 80% of screen
   border = 'rounded',
-  winblend = 10, -- optional transparency
+  winblend = 10, -- semi-transparent
 }
 
 -- Allow init.lua to update config
@@ -45,6 +45,8 @@ end
 
 -- Open floating terminal
 function M.open()
+  vim.o.termguicolors = true -- enable true colors
+
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_set_current_win(term_win)
     return
@@ -57,12 +59,11 @@ function M.open()
 
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Only open terminal if buffer is not already terminal
   if vim.bo[term_buf].buftype ~= 'terminal' then
     vim.fn.termopen(vim.o.shell)
   end
 
-  -- Apply highlights: transparent, theme-friendly
+  -- Match Neovim theme and optionally transparent
   vim.api.nvim_win_set_option(term_win, 'winhl', 'Normal:Normal,NormalNC:Normal,FloatBorder:Normal')
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
@@ -72,7 +73,7 @@ end
 -- Close floating terminal but keep buffer
 function M.close()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
-    vim.api.nvim_win_close(term_win, false) -- keep buffer alive
+    vim.api.nvim_win_close(term_win, false)
     term_win = nil
   end
 end

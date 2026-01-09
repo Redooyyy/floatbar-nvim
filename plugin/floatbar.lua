@@ -4,7 +4,7 @@ if vim.g.loaded_floatbar then
 end
 vim.g.loaded_floatbar = true
 
--- Keymap to toggle terminal
+-- Default toggle keymap
 vim.keymap.set('n', '<space>tt', function()
   require('floatbar').toggle()
 end, { desc = 'Toggle Floating Terminal' })
