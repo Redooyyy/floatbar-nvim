@@ -1,33 +1,100 @@
-# nvim-plugin-template
+# FloatBar.nvim
 
-Neovim plugin template; includes automatic documentation generation from README, integration tests with Busted, and linting with Stylua
+A modern, **toggleable floating terminal** for Neovim with **persistent buffers**, **theme support**, and **transparent windows**.  
+Perfect for users of **Kitty**, **Alacritty**, or any true-color terminal.
 
-## Usage
+---
 
-1. Click `use this template` button generate a repo on your github.
-2. Clone your plugin repo. Open terminal then cd plugin directory.
-3. Run `python3 rename.py your-plugin-name`. This will replace all `nvim-plugin-template` to your `plugin-name`. 
-   Then it will prompt you input `y` or `n` to remove example codes in `init.lua` and
-   `test/plugin_spec.lua`. If you are familiar this repo just input `y`. If you are looking at this template for the first time I suggest you inspect the contents. After this step `rename.py` will also auto-remove.
+## Features
 
-Now you have a clean plugin environment. Enjoy!
+- Toggleable floating terminal with `<space>tt`
+- Persistent buffer after closing
+- Transparent and theme-aware (supports TokyoNight and other true-color themes)
+- Semi-transparent (`winblend`) adjustable
+- Customizable width, height, and border
+- Works in **terminal mode** as well
+- Send commands programmatically with `require("floatbar").send("command")`
 
-## Format
+---
 
-The CI uses `stylua` to format the code; customize the formatting by editing `.stylua.toml`.
+## Installation
 
-## Test
+### Using Lazy.nvim
 
-See [Running tests locally](https://github.com/nvim-neorocks/nvim-busted-action?tab=readme-ov-file#running-tests-locally)
+```lua
+{
+  "Redooyyy/floatbar-nvim",
+  config = function()
+    require("floatbar").setup({
+      width = 0.8,      -- Floating window width (percentage)
+      height = 0.8,     -- Floating window height (percentage)
+      winblend = 20,    -- Transparency (0-100)
+      border = "rounded" -- Window border style
+    })
+  end,
+}
+```
 
-## CI
+### Using Packer.nvim
 
-- Auto generates doc from README.
-- Runs the [nvim-busted-action](https://github.com/nvim-neorocks/nvim-busted-action) for test.
-- Lints with `stylua`.
+```lua
+use {
+  "Redooyyy/floatbar-nvim",
+  config = function()
+    require("floatbar").setup({
+      width = 0.8,
+      height = 0.8,
+      winblend = 20,
+      border = "rounded",
+    })
+  end
+}
+```
 
-## More
+### Usage
 
-To see this template in action, take a look at my other plugins.
+```
+Toggle terminal: <space>tt
+```
 
-## License MIT
+Send command programmatically:
+
+#### require("floatbar").send("ls -la")
+
+```
+    Terminal buffer persists after closing
+
+    Works in both normal and terminal mode
+```
+
+### Configuration
+
+```lua
+require("floatbar").setup({
+    width = 0.7,       -- 70% of screen width
+    height = 0.7,      -- 70% of screen height
+    winblend = 30,     -- more transparent
+    border = "double", -- other options: single, rounded, solid
+})
+
+```
+
+### Keymaps
+
+Mode Key Action
+Normal <space>tt Toggle floating terminal
+
+```
+Terminal	<space>tt	Toggle floating terminal
+```
+
+Notes
+
+```
+    Make sure vim.o.termguicolors = true is enabled in your config.
+
+    Transparent floating terminals work best with true-color terminals like Kitty, Alacritty, or iTerm2.
+
+    Colors inherit your Neovim theme (tested with TokyoNight).
+```
+
