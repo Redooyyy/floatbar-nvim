@@ -9,10 +9,10 @@ local config = {
   width = 0.8, -- 80% of screen
   height = 0.8, -- 80% of screen
   border = 'rounded',
-  winblend = 20, -- transparency (safe for terminals)
+  winblend = 0, -- you love it crisp
 }
 
--- Allow init.lua to update config
+-- Update config
 function M.set_config(user_config)
   for k, v in pairs(user_config or {}) do
     config[k] = v
@@ -54,21 +54,22 @@ function M.open()
   -- Open floating window
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Start terminal (IMPORTANT PART)
+  -- Determine OpenCode theme based on environment
+  local opencode_theme = os.getenv('NVIM') and 'tokyo-night' or 'system'
+
+  -- Start terminal if not already a terminal buffer
   if vim.bo[term_buf].buftype ~= 'terminal' then
     ---@diagnostic disable-next-line: deprecated
     vim.fn.termopen(vim.o.shell, {
       env = {
-        TERM = vim.env.TERM, -- restores xterm-kitty
+        TERM = vim.env.TERM,
         COLORTERM = vim.env.COLORTERM,
+        OPENCODE_THEME = opencode_theme,
       },
     })
   end
 
-  -- ===============================
-  -- SAFE STYLING (terminal-friendly)
-  -- ===============================
-
+  -- Border styling only
   vim.api.nvim_set_hl(0, 'FloatingTermBorder', {
     fg = vim.api.nvim_get_hl(0, { name = 'FloatBorder' }).fg,
     bg = 'NONE',
@@ -78,7 +79,7 @@ function M.open()
 
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
-  -- Reapply on re-entry
+  -- Reapply on buffer enter
   vim.api.nvim_create_autocmd('BufEnter', {
     buffer = term_buf,
     callback = function()
@@ -92,7 +93,7 @@ function M.open()
   vim.cmd('startinsert')
 end
 
--- Close floating terminal (buffer persists)
+-- Close terminal
 function M.close()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_win_close(term_win, false)
@@ -100,7 +101,7 @@ function M.close()
   end
 end
 
--- Toggle floating terminal
+-- Toggle terminal
 function M.toggle()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     M.close()
@@ -109,7 +110,7 @@ function M.toggle()
   end
 end
 
--- Send command to terminal
+-- Send command
 function M.send(cmd)
   if not term_buf or not vim.api.nvim_buf_is_valid(term_buf) then
     M.open()
