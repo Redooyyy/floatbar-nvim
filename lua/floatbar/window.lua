@@ -6,13 +6,13 @@ local term_win = nil
 
 -- Default config
 local config = {
-  width = 0.8, -- 80% of screen
-  height = 0.8, -- 80% of screen
+  width = 0.8, -- 80% of editor width
+  height = 0.8, -- 80% of editor height
   border = 'rounded',
-  winblend = 0, -- you love it crisp
+  winblend = 0, -- fully opaque, crisp text
 }
 
--- Update config
+-- Allow user to override defaults
 function M.set_config(user_config)
   for k, v in pairs(user_config or {}) do
     config[k] = v
@@ -23,7 +23,6 @@ end
 local function float_config()
   local width = math.floor(vim.o.columns * config.width)
   local height = math.floor(vim.o.lines * config.height)
-
   return {
     relative = 'editor',
     width = width,
@@ -39,13 +38,13 @@ end
 function M.open()
   vim.o.termguicolors = true
 
-  -- Focus existing window
+  -- Focus existing window if valid
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_set_current_win(term_win)
     return
   end
 
-  -- Create buffer if needed
+  -- Create buffer if it doesn't exist
   if not term_buf or not vim.api.nvim_buf_is_valid(term_buf) then
     term_buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_option(term_buf, 'bufhidden', 'hide')
@@ -54,8 +53,10 @@ function M.open()
   -- Open floating window
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Determine OpenCode theme based on environment
-  local opencode_theme = os.getenv('NVIM') and 'nightowl' or 'system'
+  -- Determine OpenCode theme
+  -- Inside Neovim → tokyo-night
+  -- Outside → system
+  local opencode_theme = os.getenv('NVIM') and 'tokyo-night' or 'system'
 
   -- Start terminal if not already a terminal buffer
   if vim.bo[term_buf].buftype ~= 'terminal' then
@@ -69,17 +70,15 @@ function M.open()
     })
   end
 
-  -- Border styling only
+  -- Style floating border only
   vim.api.nvim_set_hl(0, 'FloatingTermBorder', {
     fg = vim.api.nvim_get_hl(0, { name = 'FloatBorder' }).fg,
     bg = 'NONE',
   })
-
   vim.api.nvim_win_set_option(term_win, 'winhl', 'FloatBorder:FloatingTermBorder')
-
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
-  -- Reapply on buffer enter
+  -- Reapply settings on buffer enter
   vim.api.nvim_create_autocmd('BufEnter', {
     buffer = term_buf,
     callback = function()
@@ -90,6 +89,7 @@ function M.open()
     end,
   })
 
+  -- Start insert mode automatically
   vim.cmd('startinsert')
 end
 
@@ -110,12 +110,11 @@ function M.toggle()
   end
 end
 
--- Send command
+-- Send command to terminal
 function M.send(cmd)
   if not term_buf or not vim.api.nvim_buf_is_valid(term_buf) then
     M.open()
   end
-
   if vim.b.terminal_job_id then
     vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. '\n')
   end
