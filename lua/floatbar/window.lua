@@ -37,10 +37,9 @@ end
 
 -- Open floating terminal
 function M.open()
-  -- Ensure truecolor support
   vim.o.termguicolors = true
 
-  -- Focus existing window if valid
+  -- Focus existing window
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_set_current_win(term_win)
     return
@@ -55,16 +54,21 @@ function M.open()
   -- Open floating window
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Start terminal if not already started
+  -- Start terminal (IMPORTANT PART)
   if vim.bo[term_buf].buftype ~= 'terminal' then
-    vim.fn.termopen(vim.o.shell)
+    ---@diagnostic disable-next-line: deprecated
+    vim.fn.termopen(vim.o.shell, {
+      env = {
+        TERM = vim.env.TERM, -- restores xterm-kitty
+        COLORTERM = vim.env.COLORTERM,
+      },
+    })
   end
 
   -- ===============================
   -- SAFE STYLING (terminal-friendly)
   -- ===============================
 
-  -- Style ONLY the border (never Normal)
   vim.api.nvim_set_hl(0, 'FloatingTermBorder', {
     fg = vim.api.nvim_get_hl(0, { name = 'FloatBorder' }).fg,
     bg = 'NONE',
@@ -72,10 +76,9 @@ function M.open()
 
   vim.api.nvim_win_set_option(term_win, 'winhl', 'FloatBorder:FloatingTermBorder')
 
-  -- Transparency (does not affect ANSI colors)
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
-  -- Reapply settings if buffer is re-entered
+  -- Reapply on re-entry
   vim.api.nvim_create_autocmd('BufEnter', {
     buffer = term_buf,
     callback = function()
@@ -86,11 +89,10 @@ function M.open()
     end,
   })
 
-  -- Enter insert mode automatically
   vim.cmd('startinsert')
 end
 
--- Close floating terminal window (buffer persists)
+-- Close floating terminal (buffer persists)
 function M.close()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_win_close(term_win, false)
