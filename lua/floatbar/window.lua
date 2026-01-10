@@ -59,7 +59,7 @@ function M.open()
     env = {
       TERM = vim.env.TERM,
       COLORTERM = vim.env.COLORTERM,
-      OPENCODE_THEME = 'nightowl', -- force OpenCode theme
+      OPENCODE_CONFIG_CONTENT = '{"theme":"nightowl"}',
     },
   })
 
