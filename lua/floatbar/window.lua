@@ -55,7 +55,7 @@ function M.open()
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
   -- Determine OpenCode theme based on environment
-  local opencode_theme = os.getenv('NVIM') and 'tokyo-night' or 'system'
+  local opencode_theme = os.getenv('NVIM') and 'nightowl' or 'system'
 
   -- Start terminal if not already a terminal buffer
   if vim.bo[term_buf].buftype ~= 'terminal' then
