@@ -76,13 +76,35 @@ function M.open()
   local fg = '#CBE0F0' -- default foreground
   local border_fg = '#547998' -- border color
 
-  -- Transparent floating background
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE', fg = fg })
-  vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE', fg = border_fg })
+  -- Dedicated transparent highlight groups for terminal content
+  vim.api.nvim_set_hl(0, 'FloatbarNormal', { bg = 'NONE', fg = fg })
+  vim.api.nvim_set_hl(0, 'FloatbarBorder', { bg = 'NONE', fg = border_fg })
 
   -- Apply highlights to this floating window
-  vim.api.nvim_win_set_option(term_win, 'winhl', 'Normal:NormalFloat,FloatBorder:FloatBorder')
+  vim.api.nvim_win_set_option(
+    term_win,
+    'winhl',
+    'Normal:FloatbarNormal,FloatBorder:FloatbarBorder,NormalNC:FloatbarNormal'
+  )
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
+
+  -- Ensure buffer background is also transparent
+  vim.api.nvim_buf_set_option(term_buf, 'winhighlight', 'Normal:FloatbarNormal')
+
+  -- Autocmd to maintain transparency when terminal enters
+  vim.api.nvim_create_autocmd('BufEnter', {
+    buffer = term_buf,
+    callback = function()
+      if term_win and vim.api.nvim_win_is_valid(term_win) then
+        vim.api.nvim_win_set_option(
+          term_win,
+          'winhl',
+          'Normal:FloatbarNormal,FloatBorder:FloatbarBorder,NormalNC:FloatbarNormal'
+        )
+        vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
+      end
+    end,
+  })
 
   -- Enter insert mode automatically
   vim.cmd('startinsert')
