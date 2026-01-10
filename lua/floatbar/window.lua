@@ -53,22 +53,15 @@ function M.open()
   -- Open floating window
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Determine OpenCode theme
-  -- Inside Neovim → tokyo-night
-  -- Outside → system
-  local opencode_theme = os.getenv('NVIM') and 'tokyo-night' or 'system'
-
-  -- Start terminal if not already a terminal buffer
-  if vim.bo[term_buf].buftype ~= 'terminal' then
-    ---@diagnostic disable-next-line: deprecated
-    vim.fn.termopen(vim.o.shell, {
-      env = {
-        TERM = vim.env.TERM,
-        COLORTERM = vim.env.COLORTERM,
-        OPENCODE_THEME = opencode_theme,
-      },
-    })
-  end
+  -- Start terminal buffer
+  ---@diagnostic disable-next-line: deprecated
+  vim.fn.termopen(vim.o.shell, {
+    env = {
+      TERM = vim.env.TERM,
+      COLORTERM = vim.env.COLORTERM,
+      OPENCODE_THEME = 'nightowl', -- force OpenCode theme
+    },
+  })
 
   -- Style floating border only
   vim.api.nvim_set_hl(0, 'FloatingTermBorder', {
