@@ -44,7 +44,7 @@ use {
     require("floatbar").setup({
       width = 0.8,
       height = 0.8,
-      winblend = 20,
+      winblend = 0,
       border = "rounded",
     })
   end
