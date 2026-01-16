@@ -28,7 +28,7 @@ Perfect for users of **Kitty**, **Alacritty**, or any true-color terminal.
     require("floatbar").setup({
       width = 0.8,      -- Floating window width (percentage)
       height = 0.8,     -- Floating window height (percentage)
-      winblend = 20,    -- Transparency (0-100)
+      winblend = 0,    -- Transparency (0-100)
       border = "rounded" -- Window border style
     })
   end,
