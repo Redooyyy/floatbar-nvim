@@ -69,7 +69,7 @@ Works in both normal and terminal mode
 require("floatbar").setup({
     width = 0.7,       -- 70% of screen width
     height = 0.7,      -- 70% of screen height
-    winblend = 30,     -- more transparent
+    winblend = 0,     -- more transparent
     border = "double", -- other options: single, rounded, solid
 })
 
