@@ -6,16 +6,25 @@ local term_win = nil
 
 -- Default config
 local config = {
-  width = 0.8, -- 80% of editor width
-  height = 0.8, -- 80% of editor height
+  width = 0.8, -- 80% of screen
+  height = 0.8, -- 80% of screen
   border = 'rounded',
-  winblend = 0, -- fully opaque, crisp text
+  winblend = 0, -- semi-transparent
 }
 
--- Allow user to override defaults
+-- Allow init.lua to update config
 function M.set_config(user_config)
-  for k, v in pairs(user_config or {}) do
-    config[k] = v
+  if user_config.width then
+    config.width = user_config.width
+  end
+  if user_config.height then
+    config.height = user_config.height
+  end
+  if user_config.border then
+    config.border = user_config.border
+  end
+  if user_config.winblend ~= nil then
+    config.winblend = user_config.winblend
   end
 end
 
@@ -36,9 +45,10 @@ end
 
 -- Open floating terminal
 function M.open()
+  -- Enable true colors for theme support
   vim.o.termguicolors = true
 
-  -- Focus existing window if valid
+  -- Create or focus existing window
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_set_current_win(term_win)
     return
@@ -53,40 +63,32 @@ function M.open()
   -- Open floating window
   term_win = vim.api.nvim_open_win(term_buf, true, float_config())
 
-  -- Start terminal buffer
-  ---@diagnostic disable-next-line: deprecated
-  vim.fn.termopen(vim.o.shell, {
-    env = {
-      TERM = vim.env.TERM,
-      COLORTERM = vim.env.COLORTERM,
-      OPENCODE_CONFIG_CONTENT = '{"theme":"nightowl"}',
-    },
-  })
+  -- Start terminal if not already a terminal buffer
+  if vim.bo[term_buf].buftype ~= 'terminal' then
+    vim.fn.termopen(vim.o.shell)
+  end
 
-  -- Style floating border only
-  vim.api.nvim_set_hl(0, 'FloatingTermBorder', {
-    fg = vim.api.nvim_get_hl(0, { name = 'FloatBorder' }).fg,
-    bg = 'NONE',
-  })
-  vim.api.nvim_win_set_option(term_win, 'winhl', 'FloatBorder:FloatingTermBorder')
+  -- -------------------------------
+  -- Modern theme-aware highlights
+  -- -------------------------------
+
+  -- TokyoNight colors (you can adjust if using a different theme)
+  local fg = '#CBE0F0' -- default foreground
+  local border_fg = '#547998' -- border color
+
+  -- Transparent floating background
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE', fg = fg })
+  vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE', fg = border_fg })
+
+  -- Apply highlights to this floating window
+  vim.api.nvim_win_set_option(term_win, 'winhl', 'Normal:NormalFloat,FloatBorder:FloatBorder')
   vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
 
-  -- Reapply settings on buffer enter
-  vim.api.nvim_create_autocmd('BufEnter', {
-    buffer = term_buf,
-    callback = function()
-      if term_win and vim.api.nvim_win_is_valid(term_win) then
-        vim.api.nvim_win_set_option(term_win, 'winhl', 'FloatBorder:FloatingTermBorder')
-        vim.api.nvim_win_set_option(term_win, 'winblend', config.winblend)
-      end
-    end,
-  })
-
-  -- Start insert mode automatically
+  -- Enter insert mode automatically
   vim.cmd('startinsert')
 end
 
--- Close terminal
+-- Close floating terminal but keep buffer alive
 function M.close()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     vim.api.nvim_win_close(term_win, false)
@@ -94,7 +96,7 @@ function M.close()
   end
 end
 
--- Toggle terminal
+-- Toggle floating terminal
 function M.toggle()
   if term_win and vim.api.nvim_win_is_valid(term_win) then
     M.close()
@@ -108,9 +110,7 @@ function M.send(cmd)
   if not term_buf or not vim.api.nvim_buf_is_valid(term_buf) then
     M.open()
   end
-  if vim.b.terminal_job_id then
-    vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. '\n')
-  end
+  vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. '\n')
 end
 
 return M
