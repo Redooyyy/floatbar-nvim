@@ -7,7 +7,7 @@ Perfect for users of **Kitty**, **Alacritty**, or any true-color terminal.
 
 ## Features
 
-- Toggleable floating terminal with `<space>tt`
+- Toggleable floating terminal with `<C-t>`
 - Persistent buffer after closing
 - Transparent and theme-aware (supports TokyoNight and other true-color themes)
 - Semi-transparent (`winblend`) adjustable
@@ -28,7 +28,7 @@ Perfect for users of **Kitty**, **Alacritty**, or any true-color terminal.
     require("floatbar").setup({
       width = 0.8,      -- Floating window width (percentage)
       height = 0.8,     -- Floating window height (percentage)
-      winblend = 20,    -- Transparency (0-100)
+      winblend = 0,    -- Transparency (0-100)
       border = "rounded" -- Window border style
     })
   end,
@@ -44,7 +44,7 @@ use {
     require("floatbar").setup({
       width = 0.8,
       height = 0.8,
-      winblend = 20,
+      winblend = 0,
       border = "rounded",
     })
   end
@@ -53,9 +53,7 @@ use {
 
 ### Usage
 
-```
-Toggle terminal: <space>tt
-```
+## Toggle terminal: <C-t>> (des: ctrl + T)
 
 ### Send command programmatically:
 
@@ -71,7 +69,7 @@ Works in both normal and terminal mode
 require("floatbar").setup({
     width = 0.7,       -- 70% of screen width
     height = 0.7,      -- 70% of screen height
-    winblend = 30,     -- more transparent
+    winblend = 0,     -- more transparent
     border = "double", -- other options: single, rounded, solid
 })
 
@@ -80,10 +78,10 @@ require("floatbar").setup({
 ### Keymaps
 
 Mode Key Action
-Normal <space>tt Toggle floating terminal
+Normal <C-t> Toggle floating terminal
 
 ```
-Terminal	<space>tt	Toggle floating terminal
+Terminal	<C-t>	Toggle floating terminal
 ```
 
 ## Notes
