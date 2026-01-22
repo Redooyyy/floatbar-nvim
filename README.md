@@ -30,6 +30,9 @@ Perfect for users of **Kitty**, **Alacritty**, or any true-color terminal.
       height = 0.8,     -- Floating window height (percentage)
       winblend = 0,    -- Transparency (0-100)
       border = "rounded" -- Window border style
+      -- keymaps = {
+      --   toggle = "<C-t>", -- default keymap
+      -- },
     })
   end,
 }
@@ -46,6 +49,9 @@ use {
       height = 0.8,
       winblend = 0,
       border = "rounded",
+      -- keymaps = {
+      --   toggle = "<C-t>", -- default keymap
+      -- },
     })
   end
 }
@@ -71,6 +77,9 @@ require("floatbar").setup({
     height = 0.7,      -- 70% of screen height
     winblend = 0,     -- more transparent
     border = "double", -- other options: single, rounded, solid
+      -- keymaps = {
+      --   toggle = "<C-t>", -- default keymap
+      -- },
 })
 
 ```
