@@ -1,5 +1,5 @@
 local window = require('floatbar.window')
-local keymaps = require('floatbar')
+local keymaps = require('plugin.floatbar')
 local M = {}
 
 -- Setup function for user config
