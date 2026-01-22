@@ -10,6 +10,9 @@ local config = {
   height = 0.8, -- 80% of screen
   border = 'rounded',
   winblend = 0, -- semi-transparent
+  keymaps = {
+    toggle = '<C-t>', -- default keymaps ctrl+t
+  },
 }
 
 -- Allow init.lua to update config
@@ -25,6 +28,11 @@ function M.set_config(user_config)
   end
   if user_config.winblend ~= nil then
     config.winblend = user_config.winblend
+  end
+  if user_config.keymaps then
+    for k, v in pairs(user_config.keymaps) do
+      config.keymaps[k] = v
+    end
   end
 end
 
