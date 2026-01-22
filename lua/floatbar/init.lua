@@ -7,8 +7,6 @@ function M.setup(user_config)
   if user_config then
     window.set_config(user_config)
     keymaps.setup(user_config)
-  else
-    keymaps.setup({})
   end
 end
 
