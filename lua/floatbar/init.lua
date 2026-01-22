@@ -1,5 +1,5 @@
 local window = require('floatbar.window')
-local keymaps = require('lua.plugin.floatbar')
+local keymaps = require('floatbar.floatbar')
 local M = {}
 
 -- Setup function for user config
