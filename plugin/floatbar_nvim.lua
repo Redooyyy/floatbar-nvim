@@ -1,3 +1,5 @@
+local floatbar = require('floatbar')
+
 local M = {}
 
 local defaults = {
@@ -17,9 +19,11 @@ function M.setup(user_config)
   end
 
   -- Normal mode
-  vim.keymap.set('n', config.keymaps.toggle, function()
-    require('floatbar').toggle()
-  end, { desc = 'Toggle Floating Terminal' })
+  vim.keymap.set('n', config.keymaps.toggle, floatbar.toggle, {
+    desc = 'Toggle Floating Terminal',
+    noremap = true,
+    silent = true,
+  })
 
   -- Terminal mode
   vim.keymap.set('t', config.keymaps.toggle, function()
@@ -28,8 +32,12 @@ function M.setup(user_config)
       'n',
       true
     )
-    require('floatbar').toggle()
-  end, { desc = 'Toggle Floating Terminal (terminal mode)' })
+    floatbar.toggle()
+  end, {
+    desc = 'Toggle Floating Terminal (terminal mode)',
+    noremap = true,
+    silent = true,
+  })
 end
 
 return M
